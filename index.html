@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Heart 💖</title>
+<style>
+    body {
+        margin: 0;
+        background: black;
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="heart"></canvas>
+
+<script>
+const canvas = document.getElementById("heart");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+ctx.translate(canvas.width / 2, canvas.height / 2);
+
+let t = 0;
+let scale = 20;
+let growing = true;
+
+// 👉 TEXT EFFECT
+let text = "Công Thức ❤️ Bé Thảo";
+let currentText = "";
+let index = 0;
+
+// 💓 Tim đập
+function heartbeat() {
+    if (growing) {
+        scale += 0.08;
+        if (scale > 23) growing = false;
+    } else {
+        scale -= 0.08;
+        if (scale < 18) growing = true;
+    }
+}
+
+// ✏️ Vẽ từ từ
+function drawHeart() {
+    ctx.fillStyle = "pink";
+    ctx.shadowColor = "pink";
+    ctx.shadowBlur = 10;
+
+    let x = 16 * Math.pow(Math.sin(t), 3);
+    let y = 13 * Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+
+    ctx.fillRect(x * scale, -y * scale, 4, 4);
+
+    t += 0.02;
+
+    if (t < Math.PI * 2) {
+        requestAnimationFrame(drawHeart);
+    } else {
+        animate();
+        typeText(); // 👉 bắt đầu hiện chữ
+    }
+}
+
+// 💖 Animation sau khi vẽ xong
+function animate() {
+    ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+
+    heartbeat();
+
+    ctx.fillStyle = "pink";
+    ctx.shadowColor = "pink";
+    ctx.shadowBlur = 12;
+
+    for (let i = 0; i < Math.PI * 2; i += 0.005) {
+        let x = 16 * Math.pow(Math.sin(i), 3);
+        let y = 13 * Math.cos(i) - 5*Math.cos(2*i) - 2*Math.cos(3*i) - Math.cos(4*i);
+        ctx.fillRect(x * scale, -y * scale, 4, 4);
+    }
+
+    drawText();
+
+    requestAnimationFrame(animate);
+}
+
+// 🔥 Hiện chữ từng ký tự
+function typeText() {
+    if (index < text.length) {
+        currentText += text[index];
+        index++;
+        setTimeout(typeText, 100); // tốc độ chữ
+    }
+}
+
+// ✨ Vẽ chữ
+function drawText() {
+    ctx.fillStyle = "red";
+    ctx.font = "bold 42px Arial";
+    ctx.textAlign = "center";
+
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 25;
+
+    ctx.fillText(currentText, 0, 20);
+}
+
+drawHeart();
+</script>
+
+</body>
+</html>
